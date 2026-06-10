@@ -1,0 +1,128 @@
+# CS3388 Assignment 4 – Textured Mesh House
+
+Name: Muniver Kaur Kharod  
+Student Number: 251425117  
+Course: CS3388  
+Assignment: Assignment 4 – Textured Mesh Rendering
+
+## Overview
+
+This program loads and renders a 3D house scene using OpenGL. The scene is made up of multiple meshes stored as .ply files and textures stored as .bmp files. Each mesh is loaded from file, uploaded to the GPU using vertex buffer objects (VBOs), and rendered using vertex array objects (VAOs) and shaders.
+
+A simple first-person camera is implemented so the user can move through the scene using the arrow keys.
+
+Main goals:
+- Load meshes from .ply files
+- Load textures from .bmp files (using the provided BMP loader)
+- Use modern OpenGL (VBOs, VAOs, shaders)
+- Implement a movable first-person camera
+- Render transparent objects correctly using alpha blending and draw order
+
+## Project Structure
+
+In my working setup, the code and assets are stored in the project folder, while the README and screenshots were created as separate files/folders (outside the project folder). For submission, everything can be placed together or zipped together.
+
+Project folder contents:
+
+CS3388_AS4/
+  src/        C++ source + header files  
+  shaders/    Vertex + fragment shaders  
+  assets/     .ply meshes + .bmp textures  
+
+Separate items:
+  README.md
+  screenshots/   (screenshots of the final rendering)
+
+## How to Compile (Mac, Homebrew)
+
+From the project folder:
+
+cd ~/Downloads/CS3388_AS4
+
+Compile with:
+
+g++ -std=c++17 -O2 src/*.cpp -I/opt/homebrew/include -L/opt/homebrew/lib -lglfw -lglew -framework OpenGL -o a4
+
+Note: On my machine, brew --prefix outputs /opt/homebrew, so the include/lib paths above match my Homebrew install.
+
+## How to Run
+
+After compiling, run:
+
+./a4
+
+When it starts, the program prints messages like:
+
+Reading image assets/bottles.bmp  
+Reading image assets/curtains.bmp  
+...  
+
+This confirms that the BMP textures were found and loaded.
+
+## Camera Controls
+
+The camera starts at position:
+
+(0.5, 0.4, 0.5)
+
+and initially looks in the direction:
+
+(0, 0, -1)
+
+Controls:
+
+Up Arrow      Move forward  
+Down Arrow    Move backward  
+Left Arrow    Rotate camera left  
+Right Arrow   Rotate camera right  
+ESC           Exit the program
+
+Movement/rotation happens continuously while keys are held down.
+
+## Rendering Approach
+
+- Each mesh is loaded from a .ply file using a custom readPLYFile function.
+- Vertex positions and UVs are uploaded to the GPU using VBOs.
+- Triangle indices are uploaded using an element buffer object (EBO).
+- A VAO stores the attribute configuration so it only needs to be set once during mesh creation.
+- Textures are loaded from .bmp files using loadARGB_BMP and uploaded to OpenGL.
+
+All meshes share the same shader program, which performs simple texture mapping using an MVP matrix.
+
+## Transparency Handling
+
+Alpha blending is enabled using:
+
+glEnable(GL_BLEND);
+glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+To ensure transparency renders correctly, the following meshes are drawn after all opaque meshes:
+
+Curtains  
+MetalObjects  
+DoorBG  
+
+Depth writes are temporarily disabled while drawing transparent objects to reduce visual artifacts.
+
+## Assets Used
+
+Bottles.ply / bottles.bmp  
+Curtains.ply / curtains.bmp  
+DoorBG.ply / doorbg.bmp  
+Floor.ply / floor.bmp  
+MetalObjects.ply / metalobjects.bmp  
+Patio.ply / patio.bmp  
+Table.ply / table.bmp  
+Walls.ply / walls.bmp  
+WindowBG.ply / windowbg.bmp  
+WoodObjects.ply / woodobjects.bmp  
+
+All assets are stored in the assets/ folder.
+
+## Known Issues
+
+No major issues were encountered. The program compiles and renders the scene correctly.
+
+## Screenshots
+
+2 screenshots are attached (similar to those attached in the assignment document) outside the assignment folder
